@@ -4,7 +4,6 @@ This project implements a recursive summarizer using OpenAI's Language Learning 
 
 ![Overview Diagram](./recursive-summarization.jpg)
 
-
 ## Features
 
 - **Initialize Input Text**: Starts the summarization process by accepting raw text input.
@@ -16,6 +15,7 @@ This project implements a recursive summarizer using OpenAI's Language Learning 
 - **Batch Creation Handler**: Facilitates the creation of multiple batches for parallel processing.
 - **Batch Completion Awaiter**: Waits for all batch completions before aggregating results.
 - **Finalize Summary**: Aggregates results to produce a comprehensive summary of the input text.
+- **Async Batch API or Real-Time Completions**: Offers flexibility to choose between using the async OpenAI batch API for handling large datasets efficiently, or real-time completions for quicker, on-the-fly summarizations.
 
 ## Installation
 
@@ -37,9 +37,10 @@ bun run src/summarizer.ts --input your_text_file.txt --output summary.txt
 
 This command will process the input text file, summarize it using the recursive summarizer, and save the output in the specified file.
 
-## Configuration
+### Configuration Options
 
-You can customize token limits, batch sizes, and other parameters in the `config.json` file according to your needs.
+- **Batch vs Real-Time**: In the `config.json` file, you can specify whether to use async batch processing or real-time completions. Set `useAsyncBatch` to `true` for batch processing, or `false` for real-time processing.
+- **Token Limits and Batch Sizes**: Customize token limits, batch sizes, and other parameters in the `config.json` file according to your specific needs.
 
 ## Development
 
