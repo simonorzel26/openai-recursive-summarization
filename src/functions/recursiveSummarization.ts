@@ -19,18 +19,17 @@ export async function recursiveSummarization({
   prompt,
   summaryId,
   batchId,
-  status,
 }: RecursiveSummarizationInput): Promise<string | void> {
   const { cleanedSummaryId } = cleanSummaryId({ summaryId });
 
-  const { fileContents } = getBatchData({batchId});
+  const { fileContent } = await getBatchData({ batchId });
 
-  const { sanitizedText } = sanitizeInput({
-    text,
+  const { sanitizedTextArr } = sanitizeInput({
+    textArr: fileContent ?? [...text],
   });
 
   const { combinedSummary } = aggregateSummaries({
-    summariesList: [...sanitizedText],
+    summariesList: sanitizedTextArr,
   });
 
   const { finishedSummary } = distributeSummary({
@@ -43,7 +42,7 @@ export async function recursiveSummarization({
   }
 
   const { segmentedTexts } = segmentText({
-    text: sanitizedText,
+    text: combinedSummary,
     maxTokenCount,
   });
 

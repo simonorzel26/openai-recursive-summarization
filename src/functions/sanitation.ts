@@ -1,14 +1,16 @@
 export interface SanitationInput {
-  text: string;
+  textArr: string[];
 }
 
 export interface SanitationOutput {
-  sanitizedText: string;
+  sanitizedTextArr: string[];
 }
 
-export function sanitizeInput({ text }: SanitationInput): SanitationOutput {
-  const sanitizedText = text.replace(/\s\s+/g, ' ').trim();
+export function sanitizeInput({ textArr }: SanitationInput): SanitationOutput {
+  const sanitizedTextArr = textArr.map((text) => {
+    return text.replace(/\s\s+/g, ' ').trim();
+  });
   return {
-    sanitizedText,
+    sanitizedTextArr,
   };
 }
