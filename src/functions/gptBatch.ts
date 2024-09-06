@@ -40,7 +40,7 @@ async function prepareAndUploadBatchFile(
 
     console.log(`Created batch file with ${batchRequests.length} requests`);
 
-    const file = new File([buffer], `batch-${summaryId}.txt`, {
+    const file = new File([buffer], `${summaryId}.txt`, {
       type: 'text/plain',
     });
 

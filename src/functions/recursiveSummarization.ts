@@ -3,13 +3,28 @@ import { aggregateSummaries } from './aggregation';
 import { distributeSummary } from './distribution';
 import { segmentText } from './segmentation';
 import { createBatch } from './batchCreation';
+import { cleanSummaryId } from './cleanSummaryId';
+import { getBatchData } from './getBatch';
+export type RecursiveSummarizationInput = {
+  text: string;
+  maxTokenCount: number;
+  prompt: string;
+  summaryId: string;
+  batchId: string;
+  status: string;
+};
+export async function recursiveSummarization({
+  text,
+  maxTokenCount,
+  prompt,
+  summaryId,
+  batchId,
+  status,
+}: RecursiveSummarizationInput): Promise<string | void> {
+  const { cleanedSummaryId } = cleanSummaryId({ summaryId });
 
-export async function recursiveSummarization(
-  prompt: string,
-  text: string,
-  maxTokenCount: number,
-  summaryId: string,
-): Promise<string | void> {
+  const { fileContents } = getBatchData({batchId});
+
   const { sanitizedText } = sanitizeInput({
     text,
   });
@@ -35,7 +50,7 @@ export async function recursiveSummarization(
   const { completed } = await createBatch({
     summarizationPrompt: prompt,
     segmentedTexts,
-    summaryId,
+    summaryId: cleanedSummaryId,
   });
 
   if (!completed) {
