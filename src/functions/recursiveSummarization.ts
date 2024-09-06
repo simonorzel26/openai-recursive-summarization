@@ -8,6 +8,7 @@ export async function recursiveSummarization(
   prompt: string,
   text: string,
   maxTokenCount: number,
+  summaryId: string,
 ): Promise<string | void> {
   const { sanitizedText } = sanitizeInput({
     text,
@@ -34,6 +35,7 @@ export async function recursiveSummarization(
   const { completed } = await createBatch({
     summarizationPrompt: prompt,
     segmentedTexts,
+    summaryId,
   });
 
   if (!completed) {

@@ -18,13 +18,7 @@ export function distributeSummary({
   const tokenCount = countTokens(text);
   const isCompatible = tokenCount <= maxTokenCount;
 
-  if (isCompatible) {
-    return {
-      finishedSummary: true,
-    };
-  }
-
   return {
-    finishedSummary: false,
+    finishedSummary: isCompatible,
   };
 }

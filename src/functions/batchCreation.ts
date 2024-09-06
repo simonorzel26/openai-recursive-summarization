@@ -1,6 +1,9 @@
+import { createBatchFromRequests } from './gptBatch';
+
 export interface BatchCreationInput {
   summarizationPrompt: string;
   segmentedTexts: string[];
+  summaryId: string;
 }
 
 export interface BatchCreationOutput {
@@ -10,13 +13,19 @@ export interface BatchCreationOutput {
 export async function createBatch({
   summarizationPrompt,
   segmentedTexts,
+  summaryId,
 }: BatchCreationInput): Promise<BatchCreationOutput> {
   const batchData = segmentedTexts.map((text) => ({
     prompt: summarizationPrompt,
     text,
   }));
 
-  // Upload openai batch file
+  const batchId = await createBatchFromRequests({
+    summarizationPrompt,
+    segmentedTexts,
+    summaryId,
+  });
+
   console.log(batchData);
 
   // Call batch awaiter
