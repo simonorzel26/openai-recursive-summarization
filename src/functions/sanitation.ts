@@ -7,10 +7,7 @@ export interface SanitationOutput {
 }
 
 export function sanitizeInput({ text }: SanitationInput): SanitationOutput {
-  const sanitizedText = text
-    .replace(/\s+/g, ' ')
-    .replace(/[^\w\s]/gi, '')
-    .trim();
+  const sanitizedText = text.replace(/\s\s+/g, ' ').trim();
   return {
     sanitizedText,
   };
