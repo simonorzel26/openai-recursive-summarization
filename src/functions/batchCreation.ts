@@ -1,22 +1,27 @@
-import { BatchCreationInput, BatchCreationOutput } from '../types';
-import { writeFileSync } from 'fs';
-import { join } from 'path';
+export interface BatchCreationInput {
+  summarizationPrompt: string;
+  segmentedTexts: string[];
+}
 
-export function createBatch(input: BatchCreationInput): BatchCreationOutput {
-  const batchFile = join(__dirname, 'batch.jsonl');
-  const batchData = input.dividedTexts.map((text) => ({
-    prompt: input.summarizationPrompt,
+export interface BatchCreationOutput {
+  completed: boolean;
+}
+
+export async function createBatch({
+  summarizationPrompt,
+  segmentedTexts,
+}: BatchCreationInput): Promise<BatchCreationOutput> {
+  const batchData = segmentedTexts.map((text) => ({
+    prompt: summarizationPrompt,
     text,
   }));
 
-  writeFileSync(
-    batchFile,
-    batchData.map((item) => JSON.stringify(item)).join('\n'),
-    'utf-8',
-  );
+  // Upload openai batch file
+  console.log(batchData);
+
+  // Call batch awaiter
 
   return {
-    batchFile,
-    webhookUrl: 'https://example.com/webhook',
+    completed: true,
   };
 }

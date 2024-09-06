@@ -1,22 +1,30 @@
-import { DistributionInput, DistributionOutput } from '../types';
+export interface DistributionInput {
+  text: string;
+  maxTokenCount: number;
+}
 
-export function distributeSummary(
-  input: DistributionInput,
-): DistributionOutput {
-  const isCompatible = input.tokenCount <= 4096;
+export interface DistributionOutput {
+  finishedSummary: boolean;
+}
+
+function countTokens(text: string) {
+  return text.trim().split(/\s+/).length;
+}
+
+export function distributeSummary({
+  text,
+  maxTokenCount,
+}: DistributionInput): DistributionOutput {
+  const tokenCount = countTokens(text);
+  const isCompatible = tokenCount <= maxTokenCount;
 
   if (isCompatible) {
     return {
-      finalSummary: input.text,
-      summarizationPrompt: input.summarizationPrompt,
-      text: input.text,
-      tokenCount: input.tokenCount,
+      finishedSummary: true,
     };
   }
 
   return {
-    summarizationPrompt: input.summarizationPrompt,
-    text: input.text,
-    tokenCount: input.tokenCount,
+    finishedSummary: false,
   };
 }

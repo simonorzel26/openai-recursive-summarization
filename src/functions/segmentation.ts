@@ -1,29 +1,25 @@
-import { SegmentationInput, SegmentationOutput } from '../types';
+export interface SegmentationInput {
+  text: string;
+  maxTokenCount: number;
+}
 
-export function segmentText(input: SegmentationInput): SegmentationOutput {
-  const { text, maxTokenCount } = input;
-  const words = text.split(' ');
-  const segments: string[] = [];
-  let currentSegment = '';
+export interface SegmentationOutput {
+  segmentedTexts: string[];
+}
 
-  words.forEach((word) => {
-    if (
-      currentSegment.split(' ').length + word.split(' ').length <=
-      maxTokenCount
-    ) {
-      currentSegment += word + ' ';
-    } else {
-      segments.push(currentSegment.trim());
-      currentSegment = word + ' ';
-    }
-  });
+export function segmentText({
+  text,
+  maxTokenCount,
+}: SegmentationInput): SegmentationOutput {
+  const textTokens = text.split(' ');
+  const segments: string[][] = [];
 
-  if (currentSegment.length > 0) {
-    segments.push(currentSegment.trim());
+  for (let i = 0; i < textTokens.length; i += maxTokenCount) {
+    const segment = textTokens.slice(i, i + maxTokenCount);
+    segments.push(segment);
   }
 
   return {
-    summarizationPrompt: input.summarizationPrompt,
-    segmentedTexts: segments,
+    segmentedTexts: segments.map((segment) => segment.join(' ')),
   };
 }

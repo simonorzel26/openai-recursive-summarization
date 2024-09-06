@@ -1,12 +1,17 @@
-import { SanitationInput, SanitationOutput } from '../types';
+export interface SanitationInput {
+  text: string;
+}
 
-export function sanitizeInput(input: SanitationInput): SanitationOutput {
-  const sanitizedText = input.text
+export interface SanitationOutput {
+  sanitizedText: string;
+}
+
+export function sanitizeInput({ text }: SanitationInput): SanitationOutput {
+  const sanitizedText = text
     .replace(/\s+/g, ' ')
     .replace(/[^\w\s]/gi, '')
     .trim();
   return {
-    summarizationPrompt: input.summarizationPrompt,
     sanitizedText,
   };
 }
