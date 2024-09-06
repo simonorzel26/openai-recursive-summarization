@@ -15,18 +15,13 @@ export async function createBatch({
   segmentedTexts,
   summaryId,
 }: BatchCreationInput): Promise<BatchCreationOutput> {
-  const batchData = segmentedTexts.map((text) => ({
-    prompt: summarizationPrompt,
-    text,
-  }));
-
   const batchId = await createBatchFromRequests({
     summarizationPrompt,
     segmentedTexts,
     summaryId,
   });
 
-  console.log(batchData);
+  console.log(batchId);
 
   // Call batch awaiter
 
