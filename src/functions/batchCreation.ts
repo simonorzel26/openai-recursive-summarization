@@ -21,9 +21,22 @@ export async function createBatch({
     summaryId,
   });
 
-  console.log(batchId);
+  const response = await fetch(process.env.BATCH_AWAITER_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      id: batchId,
+      webhookUrl: process.env.HOST_DOMAIN,
+    }),
+  });
 
-  // Call batch awaiter
+  if (response.ok) {
+    const data = await response.json();
+    console.log('Batch submitted successfully:', data);
+  } else {
+    console.error('Failed to submit batch:', response.statusText);
+    // retry or error handling
+  }
 
   return {
     completed: true,
