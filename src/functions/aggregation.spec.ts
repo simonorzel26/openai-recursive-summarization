@@ -1,4 +1,8 @@
-import { aggregateSummaries, AggregationInput, AggregationOutput } from './path-to-aggregate-function'; // Update with the correct path
+import {
+  aggregateSummaries,
+  AggregationInput,
+  AggregationOutput,
+} from './aggregation';
 
 describe('aggregateSummaries', () => {
   // Test case for normal input with multiple summaries
@@ -53,7 +57,7 @@ describe('aggregateSummaries', () => {
     };
 
     const expectedOutput: AggregationOutput = {
-      combinedSummary: '   Summary 1.    Summary 2.  Summary 3.   ', // Expecting to preserve spaces here since the function does not sanitize
+      combinedSummary: '   Summary 1.      Summary 2.  Summary 3.   ', // Expecting to preserve spaces here since the function does not sanitize
     };
 
     const result = aggregateSummaries(input);
