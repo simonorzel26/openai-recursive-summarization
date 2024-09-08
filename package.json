@@ -24,6 +24,7 @@
     "@nestjs/config": "^3.2.3",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "dotenv": "^16.4.5",
     "jest-mock": "^29.7.0",
     "openai": "^4.58.0",
     "reflect-metadata": "^0.2.0",
