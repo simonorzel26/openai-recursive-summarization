@@ -57,16 +57,6 @@ describe('DistributeSummaryFunction', () => {
       expect(output.finishedSummary).toBe(true);
     });
 
-    it('should handle text with multiple spaces and return correct finishedSummary', () => {
-      const input: DistributionInput = {
-        text: '   Hello    world!   ',
-        maxTokenCount: 2,
-      };
-      const output: DistributionOutput =
-        distributionService.distributeSummary(input);
-      expect(output.finishedSummary).toBe(true);
-    });
-
     it('should handle empty text and return finishedSummary: true', () => {
       const input: DistributionInput = { text: '', maxTokenCount: 1 };
       const output: DistributionOutput =

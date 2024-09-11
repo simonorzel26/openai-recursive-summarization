@@ -1,3 +1,5 @@
+import { isWithinTokenLimit } from 'gpt-tokenizer';
+
 export interface DistributionInput {
   text: string;
   maxTokenCount: number;
@@ -7,18 +9,18 @@ export interface DistributionOutput {
   finishedSummary: boolean;
 }
 
-function countTokens(text: string) {
-  return text.trim().split(/\s+/).length;
-}
-
 export function distributeSummary({
   text,
   maxTokenCount,
 }: DistributionInput): DistributionOutput {
-  const tokenCount = countTokens(text);
-  const isCompatible = tokenCount <= maxTokenCount;
+  if (text === '') {
+    return {
+      finishedSummary: true,
+    };
+  }
+  const isCompatible = isWithinTokenLimit(text, maxTokenCount);
 
   return {
-    finishedSummary: isCompatible,
+    finishedSummary: isCompatible ? true : false,
   };
 }
