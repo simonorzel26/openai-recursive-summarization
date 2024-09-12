@@ -4,7 +4,7 @@ export type WebhookPayload = {
   text: string;
   maxTokenCount: number;
   prompt: string;
-  summaryId: string;
+  webhookUrl: string;
   batchId: string;
   status: string;
 };

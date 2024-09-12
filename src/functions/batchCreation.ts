@@ -3,7 +3,7 @@ import { createBatchFromRequests } from './gptBatch';
 export interface BatchCreationInput {
   summarizationPrompt: string;
   segmentedTexts: string[];
-  summaryId: string;
+  cleanedWebhookUrl: string;
 }
 
 export interface BatchCreationOutput {
@@ -13,12 +13,12 @@ export interface BatchCreationOutput {
 export async function createBatch({
   summarizationPrompt,
   segmentedTexts,
-  summaryId,
+  cleanedWebhookUrl,
 }: BatchCreationInput): Promise<BatchCreationOutput> {
   const batchId = await createBatchFromRequests({
     summarizationPrompt,
     segmentedTexts,
-    summaryId,
+    cleanedWebhookUrl,
   });
 
   const response = await fetch(process.env.BATCH_AWAITER_URL, {
@@ -30,12 +30,10 @@ export async function createBatch({
     }),
   });
 
-  if (response.ok) {
-    const data = await response.json();
-    console.log('Batch submitted successfully:', data);
-  } else {
-    console.error('Failed to submit batch:', response.statusText);
-    // retry or error handling
+  if (!response.ok) {
+    const error = await response.text();
+    console.error('Error submitting batch:', error);
+    return { completed: false };
   }
 
   return {

@@ -9,7 +9,7 @@ export type RecursiveSummarizationInput = {
   text: string;
   maxTokenCount: number;
   prompt: string;
-  summaryId: string;
+  webhookUrl: string;
   batchId: string;
   status: string;
 };
@@ -17,10 +17,10 @@ export async function recursiveSummarization({
   text,
   maxTokenCount,
   prompt,
-  summaryId,
+  webhookUrl,
   batchId,
 }: RecursiveSummarizationInput): Promise<string | void> {
-  const { cleanedSummaryId } = cleanSummaryId({ summaryId });
+  const { cleanedWebhookUrl } = cleanSummaryId({ webhookUrl });
 
   const { fileContent } = await getBatchData({ batchId });
 
@@ -49,11 +49,11 @@ export async function recursiveSummarization({
   const { completed } = await createBatch({
     summarizationPrompt: prompt,
     segmentedTexts,
-    summaryId: cleanedSummaryId,
+    cleanedWebhookUrl,
   });
 
   if (!completed) {
-    console.log('Error');
+    console.error('Error');
   }
 
   return;

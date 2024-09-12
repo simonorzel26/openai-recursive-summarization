@@ -83,7 +83,7 @@ async function createBatch(inputFileId: string): Promise<string> {
 export const createBatchFromRequests = async ({
   summarizationPrompt,
   segmentedTexts,
-  summaryId,
+  cleanedWebhookUrl: summaryId,
 }: BatchCreationInput): Promise<string> => {
   try {
     const batchRequests: BatchRequest[] = segmentedTexts.map((segment) => {
