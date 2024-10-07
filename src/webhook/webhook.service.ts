@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {
   recursiveSummarization,
   RecursiveSummarizationInput,
-} from 'src/functions/recursiveSummarization';
+} from '../functions/recursiveSummarization';
 
 @Injectable()
 export class WebhookService {

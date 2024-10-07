@@ -1,15 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { WebhookController } from './webhook.controller';
+import { WebhookController, WebhookPayload } from './webhook.controller';
 import { WebhookService } from './webhook.service';
-import { WebhookPayload } from './webhook.controller';
 
 describe('WebhookController', () => {
   let webhookController: WebhookController;
   let webhookService: WebhookService;
-
-  const mockWebhookService = {
-    processBatch: jest.fn(),
-  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,7 +12,9 @@ describe('WebhookController', () => {
       providers: [
         {
           provide: WebhookService,
-          useValue: mockWebhookService,
+          useValue: {
+            processBatch: jest.fn(), // Mock the processBatch method
+          },
         },
       ],
     }).compile();
@@ -26,54 +23,39 @@ describe('WebhookController', () => {
     webhookService = module.get<WebhookService>(WebhookService);
   });
 
-  afterEach(() => {
-    jest.clearAllMocks();
+  it('should return { success: true } when status is "completed"', async () => {
+    const payload: WebhookPayload = {
+      text: 'Sample text for summarization.',
+      maxTokenCount: 100,
+      prompt: 'Please summarize the following text:',
+      webhookUrl: 'http://localhost:3000/webhook',
+      batchId: 'batch123',
+      status: 'completed',
+    };
+
+    const result = await webhookController.handleWebhook(payload);
+
+    // Assert that the processBatch function was called with the payload
+    expect(webhookService.processBatch).toHaveBeenCalledWith(payload);
+    // Assert that the return value is { success: true }
+    expect(result).toEqual({ success: true });
   });
 
-  describe('handleWebhook', () => {
-    it('should call processBatch if status is "completed"', async () => {
-      const payload: WebhookPayload = {
-        text: 'some text',
-        maxTokenCount: 100,
-        prompt: 'some prompt',
-        webhookUrl: 'http://example.com',
-        batchId: '123',
-        status: 'completed',
-      };
+  it('should return { success: true } without calling processBatch when status is not "completed"', async () => {
+    const payload: WebhookPayload = {
+      text: 'Sample text for summarization.',
+      maxTokenCount: 100,
+      prompt: 'Please summarize the following text:',
+      webhookUrl: 'http://localhost:3000/webhook',
+      batchId: 'batch123',
+      status: 'pending',
+    };
 
-      await webhookController.handleWebhook(payload);
+    const result = await webhookController.handleWebhook(payload);
 
-      expect(webhookService.processBatch).toHaveBeenCalledWith(payload);
-    });
-
-    it('should not call processBatch if status is not "completed"', async () => {
-      const payload: WebhookPayload = {
-        text: 'some text',
-        maxTokenCount: 100,
-        prompt: 'some prompt',
-        webhookUrl: 'http://example.com',
-        batchId: '123',
-        status: 'processing',
-      };
-
-      await webhookController.handleWebhook(payload);
-
-      expect(webhookService.processBatch).not.toHaveBeenCalled();
-    });
-
-    it('should return a message when webhook is received', async () => {
-      const payload: WebhookPayload = {
-        text: 'some text',
-        maxTokenCount: 100,
-        prompt: 'some prompt',
-        webhookUrl: 'http://example.com',
-        batchId: '123',
-        status: 'processing',
-      };
-
-      const result = await webhookController.handleWebhook(payload);
-
-      expect(result).toEqual({ message: 'Webhook received' });
-    });
+    // Assert that the processBatch function was NOT called
+    expect(webhookService.processBatch).not.toHaveBeenCalled();
+    // Assert that the return value is { success: true }
+    expect(result).toEqual({ success: true });
   });
 });

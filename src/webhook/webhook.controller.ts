@@ -21,6 +21,6 @@ export class WebhookController {
     if (payload.status === 'completed') {
       await this.webhookService.processBatch(payload);
     }
-    return { message: 'Webhook received' };
+    return { success: true };
   }
 }
