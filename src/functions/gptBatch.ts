@@ -21,11 +21,6 @@ interface FileObject {
   status_details?: string | undefined;
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 120000,
-});
-
 async function prepareAndUploadBatchFile(
   batchRequests: BatchRequest[],
   summaryId: string,
@@ -52,6 +47,10 @@ async function prepareAndUploadBatchFile(
 }
 
 async function uploadBatchFile(file: File): Promise<string> {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 120000,
+  });
   try {
     console.log(`Uploading batch file ${file.name}`);
     const fileObject: FileObject = await openai.files.create({
@@ -66,6 +65,11 @@ async function uploadBatchFile(file: File): Promise<string> {
 }
 
 async function createBatch(inputFileId: string): Promise<string> {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 120000,
+  });
+
   try {
     console.log(`Creating batch with input file ID ${inputFileId}`);
     const batch: OpenAI.Batch = await openai.batches.create({

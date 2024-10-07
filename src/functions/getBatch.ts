@@ -16,16 +16,15 @@ interface GPTResponse {
   };
 }
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  timeout: 120000,
-});
-
 export async function getBatchData({
   batchId,
 }: {
   batchId: string;
 }): Promise<{ fileContent: string[] | undefined }> {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+    timeout: 120000,
+  });
   try {
     const batch = await openai.batches.retrieve(batchId);
     if (batch.status !== 'completed') {
