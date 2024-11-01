@@ -16,6 +16,7 @@ interface GPTResponse {
   };
 }
 
+// src/functions/getBatch.ts
 export async function getBatchData({
   batchId,
 }: {
@@ -26,28 +27,39 @@ export async function getBatchData({
     timeout: 120000,
   });
   try {
-    const batch = await openai.batches.retrieve(batchId);
-    if (batch.status !== 'completed') {
+    try {
+      const batch = await openai.batches.retrieve(batchId);
+
+      console.log(batch);
+      if (!batch) {
+        console.log(`Batch not found with id ${batchId}`);
+        return { fileContent: undefined };
+      }
+      if (batch.status !== 'completed') {
+        return { fileContent: undefined };
+      }
+
+      const outputFileId = batch.output_file_id;
+
+      const fileResponse = await openai.files.content(outputFileId);
+      const fileContent = await fileResponse.text();
+
+      const segmentedSummaryArray: string[] = fileContent
+        .split('\n')
+        .filter((line) => line.trim())
+        .map((line) => JSON.parse(line))
+        .map((gptResponse) => {
+          const response = gptResponse as unknown as GPTResponse['response'];
+          const content = response.response?.body.choices[0]?.message?.content;
+
+          return content;
+        });
+
+      return { fileContent: segmentedSummaryArray };
+    } catch (error) {
+      console.error('Error retrieving batch:', error);
       return { fileContent: undefined };
     }
-
-    const outputFileId = batch.output_file_id;
-
-    const fileResponse = await openai.files.content(outputFileId);
-    const fileContent = await fileResponse.text();
-
-    const segmentedSummaryArray: string[] = fileContent
-      .split('\n')
-      .filter((line) => line.trim())
-      .map((line) => JSON.parse(line))
-      .map((gptResponse) => {
-        const response = gptResponse as unknown as GPTResponse['response'];
-        const content = response.response?.body.choices[0]?.message?.content;
-
-        return content;
-      });
-
-    return { fileContent: segmentedSummaryArray };
   } catch (error) {
     console.error('Error retrieving batch:', error);
     return { fileContent: undefined };
