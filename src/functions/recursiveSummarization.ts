@@ -47,7 +47,7 @@ export async function recursiveSummarization({
   });
 
   if (finishedSummary) {
-    await fetch(summarizationRetrievalWebhookURL, {
+    await fetch(decodeURIComponent(summarizationRetrievalWebhookURL), {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -75,7 +75,7 @@ export async function recursiveSummarization({
     internalId,
     status,
     batchId: newBatchId,
-    maxTokenCount: summaryMaxTokenCount,
+    summaryMaxTokenCount,
   });
 
   const { completed } = await createBatch({

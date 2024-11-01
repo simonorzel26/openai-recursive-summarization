@@ -8,7 +8,7 @@ const WebhookParamsSchema = z.object({
   internalId: z.string().min(5),
   status: z.string(),
   batchId: z.string().min(5),
-  summaryMaxTokenCount: z.number().int().min(1),
+  summaryMaxTokenCount: z.number().min(2),
   summarizationRetrievalWebhookURL: z.string().min(5),
 });
 
@@ -32,21 +32,24 @@ export class WebhookController {
     @Param() params: WebhookParams,
     @Body() payload: WebhookPayload,
   ) {
+    params.summaryMaxTokenCount = Number(params.summaryMaxTokenCount);
     // Validate and parse the params
     try {
       WebhookParamsSchema.parse(params);
-    } catch {
+    } catch (error) {
+      console.log('Invalid params', error);
       return { success: false, error: 'Invalid params' };
     }
 
     // Validate and parse the payload
     try {
       WebhookPayloadSchema.parse(payload);
-    } catch {
+    } catch (error) {
+      console.log('Invalid params', error);
       return { success: false, error: 'Invalid payload' };
     }
 
-    if (payload && params && !params.batchId) {
+    if (payload && params) {
       const completePayload: RecursiveSummarizationInput = {
         textToSummarize: payload.textToSummarize,
         summaryMaxTokenCount: params.summaryMaxTokenCount,
