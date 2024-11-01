@@ -58,14 +58,20 @@ describe('DistributeSummaryFunction', () => {
     });
 
     it('should handle empty text and return finishedSummary: true', () => {
-      const input: DistributionInput = { textToSummarize: '', maxTokenCount: 1 };
+      const input: DistributionInput = {
+        textToSummarize: '',
+        maxTokenCount: 1,
+      };
       const output: DistributionOutput =
         distributionService.distributeSummary(input);
       expect(output.finishedSummary).toBe(true);
     });
 
     it('should handle text with only spaces and return finishedSummary: true', () => {
-      const input: DistributionInput = { textToSummarize: '    ', maxTokenCount: 1 };
+      const input: DistributionInput = {
+        textToSummarize: '    ',
+        maxTokenCount: 1,
+      };
       const output: DistributionOutput =
         distributionService.distributeSummary(input);
       expect(output.finishedSummary).toBe(true);

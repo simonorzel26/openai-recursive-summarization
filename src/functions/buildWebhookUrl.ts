@@ -1,13 +1,9 @@
-export type WebhookParams = {
-  internalId: string;
-  status: string;
-  batchId: string;
-  maxTokenCount: number;
-};
+import { WebhookParams } from 'src/webhook/webhook.controller';
 
+// Updated buildWebhookUrl function to match the type
 export function buildWebhookUrl(
   baseUrl: string,
   params: WebhookParams,
 ): string {
-  return `/webhook/${params.internalId}/${params.status}/${params.batchId}/${params.maxTokenCount}`;
+  return `${baseUrl}/webhook/${params.internalId}/${params.summarizationRetrievalWebhookURL}/${params.summaryMaxTokenCount}/${params.batchId}/${params.status}`;
 }

@@ -11,7 +11,6 @@ export async function createBatch({
   batchId,
   webhookUrl,
 }: BatchCreationInput): Promise<BatchCreationOutput> {
-
   const response = await fetch(process.env.BATCH_AWAITER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },

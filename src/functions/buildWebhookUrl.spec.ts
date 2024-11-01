@@ -8,10 +8,12 @@ describe('buildWebhookUrl', () => {
       internalId: '12345',
       status: 'completed',
       batchId: '67890',
-      maxTokenCount: 100,
+      summaryMaxTokenCount: 100,
+      summarizationRetrievalWebhookURL: 'webhook-url',
     };
 
-    const expectedUrl = 'https://example.com/webhook/12345/completed/67890/100';
+    const expectedUrl =
+      'https://example.com/webhook/12345/webhook-url/100/67890/completed';
     const result = buildWebhookUrl(baseUrl, params);
 
     expect(result).toBe(expectedUrl);
@@ -23,26 +25,29 @@ describe('buildWebhookUrl', () => {
       internalId: 'abcde',
       status: 'in-progress',
       batchId: 'xyz123',
-      maxTokenCount: 50,
+      summaryMaxTokenCount: 50,
+      summarizationRetrievalWebhookURL: 'test-url',
     };
 
     const expectedUrl =
-      'http://localhost:3000/webhook/abcde/in-progress/xyz123/50';
+      'http://localhost:3000/webhook/abcde/test-url/50/xyz123/in-progress';
     const result = buildWebhookUrl(baseUrl, params);
 
     expect(result).toBe(expectedUrl);
   });
 
-  it('should handle edge cases where maxTokenCount is 0', () => {
+  it('should handle edge cases where summaryMaxTokenCount is 1', () => {
     const baseUrl = 'https://test.com';
     const params: WebhookParams = {
       internalId: '00000',
       status: 'failed',
       batchId: 'testbatch',
-      maxTokenCount: 0,
+      summaryMaxTokenCount: 1,
+      summarizationRetrievalWebhookURL: 'special-url',
     };
 
-    const expectedUrl = 'https://test.com/webhook/00000/failed/testbatch/0';
+    const expectedUrl =
+      'https://test.com/webhook/00000/special-url/1/testbatch/failed';
     const result = buildWebhookUrl(baseUrl, params);
 
     expect(result).toBe(expectedUrl);
