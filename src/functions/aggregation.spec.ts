@@ -8,7 +8,7 @@ describe('aggregateSummaries', () => {
   // Test case for normal input with multiple summaries
   it('should combine multiple summaries into one string', () => {
     const input: AggregationInput = {
-      summariesList: ['Summary 1.', 'Summary 2.', 'Summary 3.'],
+      summariesArr: ['Summary 1.', 'Summary 2.', 'Summary 3.'],
     };
 
     const expectedOutput: AggregationOutput = {
@@ -23,7 +23,7 @@ describe('aggregateSummaries', () => {
   // Test case for an empty summaries list
   it('should return an empty string when summariesList is empty', () => {
     const input: AggregationInput = {
-      summariesList: [],
+      summariesArr: [],
     };
 
     const expectedOutput: AggregationOutput = {
@@ -38,7 +38,7 @@ describe('aggregateSummaries', () => {
   // Test case for a single summary in the list
   it('should return the single summary when there is only one summary in the list', () => {
     const input: AggregationInput = {
-      summariesList: ['Only one summary.'],
+      summariesArr: ['Only one summary.'],
     };
 
     const expectedOutput: AggregationOutput = {
@@ -53,7 +53,7 @@ describe('aggregateSummaries', () => {
   // Test case for handling summaries with extra spaces
   it('should combine summaries with extra spaces correctly', () => {
     const input: AggregationInput = {
-      summariesList: ['   Summary 1.   ', '  Summary 2. ', 'Summary 3.   '],
+      summariesArr: ['   Summary 1.   ', '  Summary 2. ', 'Summary 3.   '],
     };
 
     const expectedOutput: AggregationOutput = {
@@ -68,7 +68,7 @@ describe('aggregateSummaries', () => {
   // Test case for handling large number of summaries
   it('should handle a large number of summaries and concatenate them correctly', () => {
     const input: AggregationInput = {
-      summariesList: Array(1000).fill('Summary'), // 1000 "Summary" strings
+      summariesArr: Array(1000).fill('Summary'), // 1000 "Summary" strings
     };
 
     const expectedOutput: AggregationOutput = {

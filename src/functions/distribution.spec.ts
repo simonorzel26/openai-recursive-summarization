@@ -29,7 +29,7 @@ describe('DistributeSummaryFunction', () => {
   describe('distributeSummary', () => {
     it('should return finishedSummary: true if text token count is less than or equal to maxTokenCount', () => {
       const input: DistributionInput = {
-        text: 'Hello World!',
+        textToSummarize: 'Hello World!',
         maxTokenCount: 5,
       };
       const output: DistributionOutput =
@@ -39,7 +39,7 @@ describe('DistributeSummaryFunction', () => {
 
     it('should return finishedSummary: false if text token count is greater than maxTokenCount', () => {
       const input: DistributionInput = {
-        text: 'Hello World from the other side!',
+        textToSummarize: 'Hello World from the other side!',
         maxTokenCount: 3,
       };
       const output: DistributionOutput =
@@ -49,7 +49,7 @@ describe('DistributeSummaryFunction', () => {
 
     it('should handle exact token count match and return finishedSummary: true', () => {
       const input: DistributionInput = {
-        text: 'One two three',
+        textToSummarize: 'One two three',
         maxTokenCount: 3,
       };
       const output: DistributionOutput =
@@ -58,14 +58,14 @@ describe('DistributeSummaryFunction', () => {
     });
 
     it('should handle empty text and return finishedSummary: true', () => {
-      const input: DistributionInput = { text: '', maxTokenCount: 1 };
+      const input: DistributionInput = { textToSummarize: '', maxTokenCount: 1 };
       const output: DistributionOutput =
         distributionService.distributeSummary(input);
       expect(output.finishedSummary).toBe(true);
     });
 
     it('should handle text with only spaces and return finishedSummary: true', () => {
-      const input: DistributionInput = { text: '    ', maxTokenCount: 1 };
+      const input: DistributionInput = { textToSummarize: '    ', maxTokenCount: 1 };
       const output: DistributionOutput =
         distributionService.distributeSummary(input);
       expect(output.finishedSummary).toBe(true);

@@ -1,9 +1,6 @@
-import { createBatchFromRequests } from './gptBatch';
-
 export interface BatchCreationInput {
-  summarizationPrompt: string;
-  segmentedTexts: string[];
-  cleanedWebhookUrl: string;
+  batchId: string;
+  webhookUrl: string;
 }
 
 export interface BatchCreationOutput {
@@ -11,22 +8,16 @@ export interface BatchCreationOutput {
 }
 
 export async function createBatch({
-  summarizationPrompt,
-  segmentedTexts,
-  cleanedWebhookUrl,
+  batchId,
+  webhookUrl,
 }: BatchCreationInput): Promise<BatchCreationOutput> {
-  const batchId = await createBatchFromRequests({
-    summarizationPrompt,
-    segmentedTexts,
-    cleanedWebhookUrl,
-  });
 
   const response = await fetch(process.env.BATCH_AWAITER_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       id: batchId,
-      webhookUrl: process.env.HOST_DOMAIN,
+      webhookUrl,
     }),
   });
 

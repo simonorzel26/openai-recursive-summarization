@@ -1,5 +1,5 @@
 export interface AggregationInput {
-  summariesList: string[];
+  summariesArr: string[];
 }
 
 export interface AggregationOutput {
@@ -7,7 +7,7 @@ export interface AggregationOutput {
 }
 
 export function aggregateSummaries(input: AggregationInput): AggregationOutput {
-  const combinedSummaries = input.summariesList.join(' ');
+  const combinedSummaries = input.summariesArr.join(' ');
   return {
     combinedSummary: combinedSummaries,
   };

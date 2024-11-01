@@ -1,25 +1,64 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Param, Body } from '@nestjs/common';
 import { WebhookService } from './webhook.service';
-export type WebhookPayload = {
-  text: string;
-  maxTokenCount: number;
-  prompt: string;
-  webhookUrl: string;
-  batchId: string;
-  status: string;
-};
+import { z } from 'zod';
+import { RecursiveSummarizationInput } from 'src/functions/recursiveSummarization';
+
+// Define Zod schema for WebhookParams
+const WebhookParamsSchema = z.object({
+  internalId: z.string().min(5),
+  status: z.string(),
+  batchId: z.string().min(5),
+  summaryMaxTokenCount: z.number().int().min(1),
+  summarizationRetrievalWebhookURL: z.string().min(5),
+});
+
+// Define Zod schema for WebhookPayload
+const WebhookPayloadSchema = z.object({
+  textToSummarize: z.string().min(10),
+  summarizationPrompt: z.string().min(10),
+});
+
+export type WebhookPayload = z.infer<typeof WebhookPayloadSchema>;
+export type WebhookParams = z.infer<typeof WebhookParamsSchema>;
 
 @Controller('webhook')
 export class WebhookController {
   constructor(private readonly webhookService: WebhookService) {}
 
-  @Post()
+  @Post(
+    ':internalId/:summarizationRetrievalWebhookURL/:summaryMaxTokenCount/:batchId/:status',
+  )
   async handleWebhook(
-    @Body()
-    payload: WebhookPayload,
+    @Param() params: WebhookParams,
+    @Body() payload: WebhookPayload,
   ) {
-    if (payload.status === 'completed') {
-      await this.webhookService.processBatch(payload);
+    // Validate and parse the params
+    try {
+      WebhookParamsSchema.parse(params);
+    } catch {
+      return { success: false, error: 'Invalid params' };
+    }
+
+    // Validate and parse the payload
+    try {
+      WebhookPayloadSchema.parse(payload);
+    } catch {
+      return { success: false, error: 'Invalid payload' };
+    }
+
+    if (payload && params && !params.batchId) {
+      const completePayload: RecursiveSummarizationInput = {
+        textToSummarize: payload.textToSummarize,
+        summaryMaxTokenCount: params.summaryMaxTokenCount,
+        summarizationPrompt: payload.summarizationPrompt,
+        summarizationRetrievalWebhookURL:
+          params.summarizationRetrievalWebhookURL,
+        internalId: params.internalId,
+        status: params.status,
+        batchId: params.batchId,
+      };
+
+      await this.webhookService.processBatch(completePayload);
     }
     return { success: true };
   }

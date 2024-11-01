@@ -1,7 +1,7 @@
 import { isWithinTokenLimit } from 'gpt-tokenizer';
 
 export interface DistributionInput {
-  text: string;
+  textToSummarize: string;
   maxTokenCount: number;
 }
 
@@ -10,15 +10,15 @@ export interface DistributionOutput {
 }
 
 export function distributeSummary({
-  text,
+  textToSummarize,
   maxTokenCount,
 }: DistributionInput): DistributionOutput {
-  if (text === '') {
+  if (textToSummarize === '') {
     return {
       finishedSummary: true,
     };
   }
-  const isCompatible = isWithinTokenLimit(text, maxTokenCount);
+  const isCompatible = isWithinTokenLimit(textToSummarize, maxTokenCount);
 
   return {
     finishedSummary: isCompatible ? true : false,

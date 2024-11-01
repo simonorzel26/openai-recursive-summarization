@@ -1,8 +1,8 @@
 import OpenAI from 'openai';
-import { BatchCreationInput } from './batchCreation';
+import { randomUUID } from 'crypto';
 
 interface BatchRequest {
-  custom_id: string;
+  custom_id?: string;
   method: string;
   url: string;
   body: {
@@ -23,7 +23,7 @@ interface FileObject {
 
 async function prepareAndUploadBatchFile(
   batchRequests: BatchRequest[],
-  summaryId: string,
+  fileName: string,
 ): Promise<string> {
   try {
     console.log(`Preparing batch file with ${batchRequests.length} requests`);
@@ -35,7 +35,7 @@ async function prepareAndUploadBatchFile(
 
     console.log(`Created batch file with ${batchRequests.length} requests`);
 
-    const file = new File([buffer], `${summaryId}.txt`, {
+    const file = new File([buffer], `${fileName}.txt`, {
       type: 'text/plain',
     });
 
@@ -84,19 +84,22 @@ async function createBatch(inputFileId: string): Promise<string> {
   }
 }
 
+type CreateBatchFromRequestsInput = {
+  summarizationPrompt: string;
+  segmentedTexts: string[];
+};
+
 export const createBatchFromRequests = async ({
   summarizationPrompt,
   segmentedTexts,
-  cleanedWebhookUrl: summaryId,
-}: BatchCreationInput): Promise<string> => {
+}: CreateBatchFromRequestsInput): Promise<string> => {
   try {
     const batchRequests: BatchRequest[] = segmentedTexts.map((segment) => {
       return {
-        custom_id: summaryId,
         method: 'POST',
         url: '/v1/chat/completions',
         body: {
-          model: process.env.GPT_MODEL as string,
+          model: process.env.OPENAI_MODEL as string,
           messages: [
             {
               role: 'system',
@@ -113,7 +116,7 @@ export const createBatchFromRequests = async ({
 
     const inputFileId = await prepareAndUploadBatchFile(
       batchRequests,
-      summaryId,
+      randomUUID().toString(),
     );
 
     const batchId: string = await createBatch(inputFileId);

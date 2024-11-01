@@ -28,9 +28,11 @@ export async function getBatchData({
   });
   try {
     try {
-      const batch = await openai.batches.retrieve(batchId);
+      const batch = await openai.batches.retrieve(batchId).catch((error) => {
+        console.log(error);
+        return undefined;
+      });
 
-      console.log(batch);
       if (!batch) {
         console.log(`Batch not found with id ${batchId}`);
         return { fileContent: undefined };
