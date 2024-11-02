@@ -97,6 +97,7 @@ export const createBatchFromRequests = async ({
     const batchRequests: BatchRequest[] = segmentedTexts.map((segment) => {
       return {
         method: 'POST',
+        custom_id: randomUUID().toString(),
         url: '/v1/chat/completions',
         body: {
           model: process.env.OPENAI_MODEL as string,

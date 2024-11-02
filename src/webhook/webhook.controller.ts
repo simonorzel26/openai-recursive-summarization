@@ -33,6 +33,20 @@ export class WebhookController {
     @Body() payload: WebhookPayload,
   ) {
     params.summaryMaxTokenCount = Number(params.summaryMaxTokenCount);
+    function sanitizeInput(input: string): string {
+      return input.replace(/[\x00-\x1F\x7F]/g, ''); // Removes control characters
+    }
+
+    // Inside your controller method
+    const sanitizedPayload = {
+      ...payload,
+      textToSummarize:
+        typeof payload.textToSummarize === 'string'
+          ? sanitizeInput(payload.textToSummarize)
+          : payload.textToSummarize,
+    };
+
+    WebhookPayloadSchema.parse(sanitizedPayload);
     // Validate and parse the params
     try {
       WebhookParamsSchema.parse(params);
