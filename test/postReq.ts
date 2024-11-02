@@ -4,14 +4,15 @@ import { readFileSync } from 'fs';
 const baseUrl = 'http://localhost:3000/webhook';
 const params = {
   internalId: '12345',
-  summarizationRetrievalWebhookURL: 'webhook-url',
+  summarizationRetrievalWebhookURL:
+    'https://webhook.site/217d0f3d-2cd1-4e94-a4e6-978593aafbbb',
   summaryMaxTokenCount: 100000,
   batchId: 'testBatch',
   status: 'completed',
 };
 
 // Construct the full URL
-const url = `${baseUrl}/${params.internalId}/${params.summarizationRetrievalWebhookURL}/${params.summaryMaxTokenCount}/${params.batchId}/${params.status}`;
+const url = `${baseUrl}/${params.internalId}/${encodeURIComponent(params.summarizationRetrievalWebhookURL)}/${params.summaryMaxTokenCount}/${params.batchId}/${params.status}`;
 
 // Function to read file and send POST request
 async function sendWebhook() {
